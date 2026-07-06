@@ -159,6 +159,9 @@ function loadKeyborad() {
       const keyboardBtn = row
         .map((char) => {
           if (char === "✖️" || char === "Enter") {
+            if (char === "Enter") {
+              return `<div class="keyboard__button special__key" onclick=" handleEnter()">${char}</div>`;
+            }
             return `<div class="keyboard__button special__key">${char}</div>`;
           }
           return `<div class="keyboard__button" onclick="handleInputKey(this.textContent)">${char}</div>`;
