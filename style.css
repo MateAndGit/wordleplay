@@ -1,0 +1,103 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  background-color: black;
+}
+
+.wordle__container {
+  padding-bottom: 8px;
+  padding-top: 10px;
+}
+.wordle__row {
+  display: flex;
+  text-align: center;
+}
+
+.wordle__box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  background-color: #142a40;
+  margin: 3px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 2em;
+}
+
+.wordle__box.effect {
+  background-color: black;
+  /* transition: scale 1s; */
+}
+
+.wordle__box.correct {
+  background-color: #6aaa64;
+  color: white;
+}
+.wordle__box.present {
+  background-color: #c9b458;
+  color: white;
+}
+
+.keyboard__container {
+  margin-top: 20px;
+  width: 80vw;
+  height: 150px;
+}
+
+.keyboard__row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 300px;
+}
+
+.keyboard__button {
+  width: 70px;
+  height: 50px;
+  background-color: #142a40;
+  margin: 3px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.keyboard__button:hover {
+  background-color: bisque;
+}
+
+.keyboard__button.special__key {
+  width: 120px;
+}
+
+@media (max-width: 768px) {
+  .wordle__container {
+    overflow: hidden;
+    width: 70%;
+  }
+  .keyboard__container {
+    overflow: hidden;
+    width: 80%;
+    height: 100%;
+  }
+
+  .keyboard__row {
+    padding: 0;
+  }
+}
