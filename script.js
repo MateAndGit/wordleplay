@@ -162,7 +162,9 @@ function loadKeyborad() {
             if (char === "Enter") {
               return `<div class="keyboard__button special__key" onclick=" handleEnter()">${char}</div>`;
             }
-            return `<div class="keyboard__button special__key">${char}</div>`;
+            if (char === "✖️") {
+              return `<div class="keyboard__button special__key" onclick="handleBackspace()">${char}</div>`;
+            }
           }
           return `<div class="keyboard__button" onclick="handleInputKey(this.textContent)">${char}</div>`;
         })
