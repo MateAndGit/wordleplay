@@ -239,6 +239,6 @@ body {
   }
 
   .how__to__play {
-    top: 0;
+    display: none;
   }
 }
