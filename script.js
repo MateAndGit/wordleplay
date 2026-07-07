@@ -10,7 +10,7 @@ const ERROR_MSG = "No Definitions Found";
 const $wordleContainer = document.getElementById("wordle__container");
 const $keyboardContainer = document.getElementById("keyboard__container");
 
-let correctWord = "apple";
+let correctWord = "teamo";
 let row = correctWord.length;
 let wordleList = Array.from({ length: col }, () =>
   Array.from({ length: row }, () => ({
@@ -82,7 +82,10 @@ function testGuess(gessWord) {
     const $currentBox = document.querySelector(
       `[data-index="${currentIndex}"]`,
     );
-    if (gessArr[i] !== "" && correctArr.includes(gessArr[i])) {
+    if (gessArr[i] === "") {
+      continue;
+    }
+    if (correctArr.includes(gessArr[i])) {
       differPosition++;
       $currentBox.classList.add("present");
     } else {
@@ -93,9 +96,21 @@ function testGuess(gessWord) {
   if (correctWord.length === samePosition) {
     isAnswer = true;
     alert("gooooood");
+
+    guessAttemp = 0;
+    rowCount = 0;
+    guessWordle = [];
+
+    wordleList = Array.from({ length: col }, () =>
+      Array.from({ length: row }, () => ({
+        text: "",
+        isCorrect: false,
+        isExist: false,
+      })),
+    );
+
     loadWodleBoxes();
   }
-
   if (!isAnswer) {
     if (++guessAttemp === col) {
       if (confirm("정답을 확인하시겠습니까?")) {
