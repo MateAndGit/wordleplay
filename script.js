@@ -89,7 +89,7 @@ function testGuess(gessWord) {
       differPosition++;
       $currentBox.classList.add("present");
     } else {
-      $currentBox.classList.add("effect");
+      $currentBox.classList.add("absent");
     }
   }
 
