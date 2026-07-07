@@ -6,31 +6,41 @@
 
 body {
   background-color: black;
+  /* 모바일에서 불필요한 좌우 스크롤이 생기는 걸 원천 차단합니다 */
+  overflow-x: hidden;
 }
 
+/* 1. 전체 레이아웃 컨테이너 */
 .play__container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  height: 800px;
+  min-height: 100vh; /* 고정 800px 대신 화면 전체 높이를 쓰도록 변경 */
+  padding: 20px;
 }
 
+/* 2. 워들 상자 전체 판 */
 .wordle__container {
+  width: 100%;
+  max-width: 380px; /* PC에서 너무 커지지 않게 상한선 장착 */
   padding-bottom: 8px;
   padding-top: 10px;
 }
+
 .wordle__row {
   display: flex;
-  text-align: center;
+  justify-content: center; /* 박스들을 언제나 정중앙으로 모음 */
+  width: 100%;
 }
 
 .wordle__box {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70px;
-  height: 70px;
+  /* PC 기본 크기 */
+  width: 65px;
+  height: 65px;
   background-color: #142a40;
   margin: 3px;
   border-radius: 10px;
@@ -38,16 +48,19 @@ body {
   font-weight: bold;
   font-size: 2em;
 }
+
+/* --- 애니메이션 구간 --- */
 .wordle__box.effect {
   animation-name: pointBox;
-  animation-duration: 1s;
+  animation-duration: 0.2s; /* 입력 애니메이션은 0.2초 정도로 빠르게 톡! 터지는 게 이뻐요 */
   animation-fill-mode: forwards;
 }
+
 @keyframes pointBox {
-  from {
-    scale: 0;
+  0% {
+    scale: 0.8;
   }
-  to {
+  100% {
     scale: 1;
   }
 }
@@ -55,17 +68,17 @@ body {
 .wordle__box.correct {
   color: white;
   animation-name: correctColor;
-  animation-duration: 1s;
+  animation-duration: 0.6s;
   animation-fill-mode: forwards;
 }
 
 @keyframes correctColor {
   0% {
-    scale: 0;
+    scale: 1;
     background-color: #142a40;
   }
   50% {
-    scale: 1;
+    scale: 1.1;
     background-color: #142a40;
   }
   100% {
@@ -77,17 +90,17 @@ body {
 .wordle__box.present {
   color: white;
   animation-name: presentColor;
-  animation-duration: 1s;
+  animation-duration: 0.6s;
   animation-fill-mode: forwards;
 }
 
 @keyframes presentColor {
   0% {
-    scale: 0;
+    scale: 1;
     background-color: #142a40;
   }
   50% {
-    scale: 1;
+    scale: 1.1;
     background-color: #142a40;
   }
   100% {
@@ -96,51 +109,90 @@ body {
   }
 }
 
+/* 아예 틀린 글자(회색) 전용 애니메이션 */
+.wordle__box.absent {
+  color: white;
+  animation-name: absentColor;
+  animation-duration: 0.6s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes absentColor {
+  0% {
+    scale: 1;
+    background-color: #142a40;
+  }
+  100% {
+    scale: 1;
+    background-color: #787c7e;
+  }
+}
+
+/* 3. 가상 키보드 전체 판 */
 .keyboard__container {
   margin-top: 20px;
-  width: 80vw;
-  height: 150px;
+  width: 100%;
+  max-width: 500px; /* PC에서 키보드가 너무 광활하게 퍼지는 걸 막아줍니다 */
 }
 
 .keyboard__row {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 300px;
+  width: 100%;
+  padding: 0; /* 기존의 무시무시한 300px 패딩 삭제! */
 }
 
 .keyboard__button {
-  width: 70px;
+  width: 40px; /* PC 화면 기준 기본 너비 */
   height: 50px;
   background-color: #142a40;
   margin: 3px;
-  border-radius: 10px;
-  text-align: center;
+  border-radius: 8px;
   font-weight: bold;
   color: white;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.2s;
 }
 
 .keyboard__button:hover {
-  background-color: bisque;
+  background-color: #264b73; /* bisque 대신 어두운 테마에 어울리는 색상으로 변경 */
 }
 
 .keyboard__button.special__key {
-  width: 120px;
+  width: 65px; /* Enter, ✖️ 버튼은 약간 더 큼지막하게 */
+  font-size: 0.85em;
 }
 
+/* 4. 모바일 반응형 핏 튜닝 (핵심 구간!) */
 @media (max-width: 768px) {
-  .wordle__container {
-    width: 380px;
-  }
-  .keyboard__container {
-    width: 380px;
+  .play__container {
+    padding: 10px; /* 모바일에서는 여백을 조금 줄여서 공간 확보 */
   }
 
-  .keyboard__row {
-    padding: 0;
+  /* 폰 화면 너비에 맞춰 워들 상자 크기 유연하게 줄이기 */
+  .wordle__box {
+    width: 52px;
+    height: 52px;
+    font-size: 1.6em;
+    margin: 2px;
+  }
+
+  /* 🌟 모바일 키보드 억까 방지 황금 공식 */
+  .keyboard__button {
+    width: auto; /* 고정 픽셀 너비를 해제합니다 */
+    flex: 1; /* 폰 너비에 맞춰서 정확하게 n분의 1로 쪼개 가집니다 */
+    height: 45px;
+    font-size: 0.9em;
+    margin: 2px;
+  }
+
+  /* 특수 키들은 일반 알파벳 키보다 1.5배 더 넓은 비율을 가지도록 밸런스 튜닝 */
+  .keyboard__button.special__key {
+    width: auto;
+    flex: 1.5;
   }
 }
