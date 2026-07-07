@@ -5,12 +5,15 @@
 }
 
 body {
+  background-color: black;
+}
+
+.play__container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  margin-top: 50px;
-  background-color: black;
+  height: 800px;
 }
 
 .wordle__container {
@@ -35,19 +38,62 @@ body {
   font-weight: bold;
   font-size: 2em;
 }
-
 .wordle__box.effect {
-  background-color: black;
-  /* transition: scale 1s; */
+  animation-name: pointBox;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+@keyframes pointBox {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
 }
 
 .wordle__box.correct {
-  background-color: #6aaa64;
   color: white;
+  animation-name: correctColor;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
 }
+
+@keyframes correctColor {
+  0% {
+    scale: 0;
+    background-color: #142a40;
+  }
+  50% {
+    scale: 1;
+    background-color: #142a40;
+  }
+  100% {
+    scale: 1;
+    background-color: #6aaa64;
+  }
+}
+
 .wordle__box.present {
-  background-color: #c9b458;
   color: white;
+  animation-name: presentColor;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes presentColor {
+  0% {
+    scale: 0;
+    background-color: #142a40;
+  }
+  50% {
+    scale: 1;
+    background-color: #142a40;
+  }
+  100% {
+    scale: 1;
+    background-color: #c9b458;
+  }
 }
 
 .keyboard__container {
@@ -88,20 +134,13 @@ body {
 
 @media (max-width: 768px) {
   .wordle__container {
-    overflow: hidden;
-    width: 80%;
+    width: 380px;
   }
   .keyboard__container {
-    overflow: hidden;
-    width: 80%;
-    height: 100%;
+    width: 380px;
   }
 
   .keyboard__row {
     padding: 0;
-  }
-  .keyboard__button {
-    width: 100px;
-    height: 50px;
   }
 }

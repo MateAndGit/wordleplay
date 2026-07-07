@@ -28,20 +28,29 @@ function handleInputKey(btn) {
     return;
   }
 
-  // const $wordleBox = document.querySelector(".wordle__box");
   const key = btn;
   guessWordle.push(key);
-  wordleList[guessAttemp][rowCount++].text = key;
-  loadWodleBoxes();
+
+  const currentIndex = guessAttemp * row + rowCount;
+  const $currentBox = document.querySelector(`[data-index="${currentIndex}"]`);
+  $currentBox.textContent = key;
+  $currentBox.classList.add("effect");
+  rowCount++;
+  console.log(currentIndex, rowCount, guessWordle.length);
 }
 
 function handleBackspace() {
-  if (guessWordle.length < 1) {
+  if (guessWordle.length == 0) {
     return;
   }
   guessWordle.pop();
-  wordleList[guessAttemp][--rowCount].text = "";
-  loadWodleBoxes();
+  rowCount--;
+  const currentIndex = guessAttemp * row + rowCount;
+  const $currentBox = document.querySelector(`[data-index="${currentIndex}"]`);
+  $currentBox.textContent = "";
+  $currentBox.classList.remove("effect");
+
+  console.log(currentIndex, rowCount, guessWordle.length);
 }
 
 function testGuess(gessWord) {
@@ -56,25 +65,35 @@ function testGuess(gessWord) {
   let isAnswer = false;
 
   for (let i = 0; i < correctArr.length; i++) {
+    const currentIndex = guessAttemp * row + i;
+    const $currentBox = document.querySelector(
+      `[data-index="${currentIndex}"]`,
+    );
     if (correctArr[i] === gessArr[i]) {
       samePosition++;
       gessArr[i] = "";
       correctArr[i] = "";
-      wordleList[guessAttemp][i].isCorrect = true;
+      $currentBox.classList.add("correct");
     }
   }
 
   for (let i = 0; i < gessArr.length; i++) {
+    const currentIndex = guessAttemp * row + i;
+    const $currentBox = document.querySelector(
+      `[data-index="${currentIndex}"]`,
+    );
     if (gessArr[i] !== "" && correctArr.includes(gessArr[i])) {
       differPosition++;
-      wordleList[guessAttemp][i].isExist = true;
+      $currentBox.classList.add("present");
+    } else {
+      $currentBox.classList.add("effect");
     }
   }
 
   if (correctWord.length === samePosition) {
-    loadWodleBoxes();
     isAnswer = true;
     alert("gooooood");
+    loadWodleBoxes();
   }
 
   if (!isAnswer) {
@@ -94,7 +113,6 @@ function testGuess(gessWord) {
     }
     guessWordle = [];
     rowCount = 0;
-    loadWodleBoxes();
     console.log("samePosition : " + samePosition);
     console.log("differPosition : " + differPosition);
   }
@@ -128,20 +146,12 @@ window.addEventListener("keydown", (event) => {
 });
 
 function loadWodleBoxes() {
-  if (wordleList.length === 0) {
-    return;
-  }
   const wordleHTML = wordleList
-    .map((row) => {
-      const boxesHTML = row
-        .map((char) => {
-          if (char.isCorrect) {
-            return `<div class="wordle__box correct">${char.text}</div>`;
-          }
-          if (char.isExist) {
-            return `<div class="wordle__box present">${char.text}</div>`;
-          }
-          return `<div class="wordle__box">${char.text}</div>`;
+    .map((wordRow, i) => {
+      const boxesHTML = wordRow
+        .map((box, j) => {
+          const index = i * row + j;
+          return `<div class="wordle__box" data-index="${index}"></div>`;
         })
         .join("");
       return `<div class="wordle__row">${boxesHTML}</div>`;
@@ -162,9 +172,7 @@ function loadKeyborad() {
             if (char === "Enter") {
               return `<div class="keyboard__button special__key" onclick=" handleEnter()">${char}</div>`;
             }
-            if (char === "✖️") {
-              return `<div class="keyboard__button special__key" onclick="handleBackspace()">${char}</div>`;
-            }
+            return `<div class="keyboard__button special__key">${char}</div>`;
           }
           return `<div class="keyboard__button" onclick="handleInputKey(this.textContent)">${char}</div>`;
         })
