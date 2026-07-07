@@ -5,23 +5,35 @@ const keyBoradArray = [
   ["✖️", "Z", "X", "C", "V", "B", "N", "M", "Enter"],
 ];
 const SERVER_URL = "https://api.dictionaryapi.dev/api/v2/entries/en";
+const RANDOM_WORD_URL = "https://random-word-api.herokuapp.com/word?diff=1";
 const ERROR_MSG = "No Definitions Found";
 
 const $wordleContainer = document.getElementById("wordle__container");
 const $keyboardContainer = document.getElementById("keyboard__container");
 
-let correctWord = "teamo";
+let correctWord = "apple"; // 💡 에러 방지용 기본 단어 세팅
 let row = correctWord.length;
-let wordleList = Array.from({ length: col }, () =>
-  Array.from({ length: row }, () => ({
-    text: "",
-    isCorrect: false,
-    isExist: false,
-  })),
-);
+let wordleList = Array.from(Array(col), () => new Array(row).fill(""));
 let guessWordle = [];
 let rowCount = 0;
 let guessAttemp = 0;
+
+async function setRandomWord() {
+  try {
+    const response = await fetch(RANDOM_WORD_URL);
+    if (!response.ok) throw new Error("단어를 가져오는데 실패함");
+
+    const data = await response.json();
+    correctWord = data[0].toLowerCase();
+    row = correctWord.length;
+
+    wordleList = Array.from(Array(col), () => new Array(row).fill(""));
+    console.log("이번 판 정답(치트키):", correctWord); // 테스트용 로그
+  } catch (e) {
+    console.error("랜덤 단어 로딩 실패, 기본 단어로 대체합니다:", e);
+    correctWord = "apple"; // 인터넷이 끊기는 등 에러 나면 기본 단어로 안전장치
+  }
+}
 
 function handleInputKey(btn) {
   if (guessWordle.length >= row) {
@@ -36,7 +48,6 @@ function handleInputKey(btn) {
   $currentBox.textContent = key;
   $currentBox.classList.add("effect");
   rowCount++;
-  console.log(currentIndex, rowCount, guessWordle.length);
 }
 
 function handleBackspace() {
@@ -49,11 +60,9 @@ function handleBackspace() {
   const $currentBox = document.querySelector(`[data-index="${currentIndex}"]`);
   $currentBox.textContent = "";
   $currentBox.classList.remove("effect");
-
-  console.log(currentIndex, rowCount, guessWordle.length);
 }
 
-function testGuess(gessWord) {
+async function testGuess(gessWord) {
   correctWord = correctWord.toUpperCase();
   gessWord = gessWord.toUpperCase();
 
@@ -96,19 +105,12 @@ function testGuess(gessWord) {
   if (correctWord.length === samePosition) {
     isAnswer = true;
     alert("gooooood");
-
     guessAttemp = 0;
     rowCount = 0;
     guessWordle = [];
 
-    wordleList = Array.from({ length: col }, () =>
-      Array.from({ length: row }, () => ({
-        text: "",
-        isCorrect: false,
-        isExist: false,
-      })),
-    );
-
+    wordleList = Array.from(Array(col), () => new Array(row).fill(""));
+    await setRandomWord();
     loadWodleBoxes();
   }
   if (!isAnswer) {
@@ -116,13 +118,8 @@ function testGuess(gessWord) {
       if (confirm("정답을 확인하시겠습니까?")) {
         alert(correctWord);
         guessAttemp = 0;
-        wordleList = Array.from({ length: col }, () =>
-          Array.from({ length: row }, () => ({
-            text: "",
-            isCorrect: false,
-            isExist: false,
-          })),
-        );
+        wordleList = Array.from(Array(col), () => new Array(row).fill(""));
+        await setRandomWord();
         loadWodleBoxes();
       }
     }
@@ -133,15 +130,25 @@ function testGuess(gessWord) {
   }
 }
 
-function handleEnter() {
+async function handleEnter() {
   if (guessWordle.length !== row) {
     return;
   }
 
-  let guessWord = "";
-  guessWordle.map((w) => (guessWord += w));
+  let guessWord = guessWordle.join("").toLowerCase();
 
-  testGuess(guessWord);
+  try {
+    const response = await fetch(`${SERVER_URL}/${guessWord}`);
+
+    if (!response.ok) {
+      alert("사전에 등록되지 않은 단어입니다! ✖️");
+      return;
+    }
+
+    await testGuess(guessWord);
+  } catch (e) {
+    console.error("네트워크 에러 발생:", e);
+  }
 }
 
 window.addEventListener("keydown", (event) => {
@@ -198,7 +205,8 @@ function loadKeyborad() {
   $keyboardContainer.innerHTML = keyBoredHTML;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await setRandomWord();
   loadWodleBoxes();
   loadKeyborad();
 });
