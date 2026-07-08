@@ -5,7 +5,7 @@ const keyBoradArray = [
   ["✖️", "Z", "X", "C", "V", "B", "N", "M", "Enter"],
 ];
 const SERVER_URL = "https://api.dictionaryapi.dev/api/v2/entries/en";
-const RANDOM_WORD_URL = "https://random-word-api.herokuapp.com/word?length=5";
+const RANDOM_WORD_URL = "https://random-word-api.herokuapp.com/word?length=4";
 const ERROR_MSG = "No Definitions Found";
 
 const $wordleContainer = document.getElementById("wordle__container");
@@ -114,7 +114,17 @@ async function testGuess(gessWord) {
     loadWodleBoxes();
   }
   if (!isAnswer) {
-    if (++guessAttemp === col) {
+    ++guessAttemp;
+    if (guessAttemp === 5) {
+      if (confirm("정답을 확인하시겠습니까?")) {
+        alert(correctWord);
+        guessAttemp = 0;
+        wordleList = Array.from(Array(col), () => new Array(row).fill(""));
+        await setRandomWord();
+        loadWodleBoxes();
+      }
+    }
+    if (guessAttemp === col) {
       if (confirm("정답을 확인하시겠습니까?")) {
         alert(correctWord);
         guessAttemp = 0;
