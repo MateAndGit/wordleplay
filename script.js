@@ -5,7 +5,7 @@ const keyBoradArray = [
   ["✖️", "Z", "X", "C", "V", "B", "N", "M", "Enter"],
 ];
 const SERVER_URL = "https://api.dictionaryapi.dev/api/v2/entries/en";
-const RANDOM_WORD_URL = "https://random-word-api.herokuapp.com/word?diff=1";
+const RANDOM_WORD_URL = "https://random-word-api.herokuapp.com/word?length=5";
 const ERROR_MSG = "No Definitions Found";
 
 const $wordleContainer = document.getElementById("wordle__container");
@@ -194,7 +194,7 @@ function loadKeyborad() {
             if (char === "Enter") {
               return `<div class="keyboard__button special__key" onclick=" handleEnter()">${char}</div>`;
             }
-            return `<div class="keyboard__button special__key">${char}</div>`;
+            return `<div class="keyboard__button special__key" onclick="handleBackspace()">${char}</div>`;
           }
           return `<div class="keyboard__button" onclick="handleInputKey(this.textContent)">${char}</div>`;
         })
